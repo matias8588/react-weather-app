@@ -1,0 +1,47 @@
+@-ms-viewport {
+  width: device-width;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: beige;
+  height: 100vh;
+}
+
+.weather-box {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  background-color: #39cccc;
+  width: 20rem;
+  height: 23rem;
+  margin: 10rem auto 0 auto;
+  border-radius: 4rem;
+}
+
+.weather-item {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #fff56c;
+}
+
+.weather-icon {
+  max-width: 50px;
+}
+
+.slash {
+  margin: 0 1rem;
+}

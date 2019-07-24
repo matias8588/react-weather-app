@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import Weather from "../Weather/Weather";
 
 export default class Home extends Component {
-  state = {
-    city: undefined,
-  };
   render() {
-    console.log("Ciudad: ", this.city);
-
+    console.log(this.Weather);
     return (
       <div>
         <p>Main screen</p>

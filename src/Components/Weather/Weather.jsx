@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
+import Search from "../Searchbox/Search";
 import "./Weather.css";
 
 export default class Weather extends Component {
@@ -8,7 +9,7 @@ export default class Weather extends Component {
     lon: undefined,
     city: undefined,
     temperatureC: undefined,
-    temperatureF: undefined,
+    humidity: undefined,
     icon: undefined,
     sunrise: undefined,
     sunset: undefined,
@@ -27,14 +28,14 @@ export default class Weather extends Component {
       `//api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`,
     );
     const data = await api_call.json();
-    console.log(data);
+    console.log("Desde el componente del clima:", data);
 
     this.setState({
       lat: latitude,
       lon: longitude,
       city: data.name,
       temperatureC: Math.round(data.main.temp),
-      temperatureF: Math.round(data.main.temp * 1.8 + 32),
+      humidity: data.main.humidity,
       icon: data.weather[0].icon,
       sunrise: moment.unix(data.sys.sunrise).format("hh:mm a"),
       sunset: moment.unix(data.sys.sunset).format("hh:mm a"),
@@ -52,7 +53,7 @@ export default class Weather extends Component {
 
     this.timerID = setInterval(
       () => this.getWeather(this.state.lat, this.state.lon),
-      60000,
+      100000,
     );
   }
 
@@ -61,23 +62,16 @@ export default class Weather extends Component {
   }
 
   render() {
-    const {
-      city,
-      temperatureC,
-      temperatureF,
-      icon,
-      sunrise,
-      sunset,
-    } = this.state;
+    const { city, temperatureC, humidity, icon, sunrise, sunset } = this.state;
     if (city) {
       return (
         <div className="App">
           <div className="weather-box">
-            <div className="weather-item">{city}</div>
+            <div className="weather-item">Ciudad: {city}</div>
             <div className="weather-item">
-              {temperatureC} &deg;C <span className="slash">/</span>{" "}
-              {temperatureF} &deg;F
+              Temperatura: {temperatureC} &deg;C
             </div>
+            <div className="weather-item">Humedad: {humidity}%</div>
             <div>
               <img
                 className="weather-icon"
@@ -86,16 +80,24 @@ export default class Weather extends Component {
               />
             </div>
             <div className="weather-item">
-              <span>sunrise: {sunrise}</span>
+              <span>Salida del sol: {sunrise}</span>
             </div>
             <div className="weather-item">
-              <span>sunset: {sunset}</span>
+              <span>Puesta del sol: {sunset}</span>
             </div>
           </div>
         </div>
       );
     } else {
-      return <div>Loading...</div>;
+      return (
+        <div>
+          <h2>
+            No pudimos encontrar tu ubicación, por favor ingresá el nombre de tu
+            ciudad
+          </h2>
+          <Search />
+        </div>
+      );
     }
   }
 }

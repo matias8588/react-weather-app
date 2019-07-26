@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import moment from "moment";
-import Search from "../Searchbox/Search";
 import "./Weather.css";
 
 export default class Weather extends Component {
@@ -10,6 +9,9 @@ export default class Weather extends Component {
     city: undefined,
     temperatureC: undefined,
     humidity: undefined,
+    maxTemp: undefined,
+    minTemp: undefined,
+    wind: undefined,
     icon: undefined,
     sunrise: undefined,
     sunset: undefined,
@@ -28,7 +30,6 @@ export default class Weather extends Component {
       `//api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`,
     );
     const data = await api_call.json();
-    console.log("Desde el componente del clima:", data);
 
     this.setState({
       lat: latitude,
@@ -36,10 +37,15 @@ export default class Weather extends Component {
       city: data.name,
       temperatureC: Math.round(data.main.temp),
       humidity: data.main.humidity,
+      maxTemp: Math.round(data.main.temp_max),
+      minTemp: Math.round(data.main.temp_min),
+      wind: data.wind.speed,
       icon: data.weather[0].icon,
       sunrise: moment.unix(data.sys.sunrise).format("hh:mm a"),
       sunset: moment.unix(data.sys.sunset).format("hh:mm a"),
     });
+
+    console.log(data);
   };
 
   componentDidMount() {
@@ -62,7 +68,17 @@ export default class Weather extends Component {
   }
 
   render() {
-    const { city, temperatureC, humidity, icon, sunrise, sunset } = this.state;
+    const {
+      city,
+      temperatureC,
+      humidity,
+      maxTemp,
+      minTemp,
+      wind,
+      icon,
+      sunrise,
+      sunset,
+    } = this.state;
     if (city) {
       return (
         <div className="App">
@@ -85,19 +101,20 @@ export default class Weather extends Component {
             <div className="weather-item">
               <span>Puesta del sol: {sunset}</span>
             </div>
+            <div className="weather-item">
+              <span>Máxima prevista: {maxTemp}&deg;C</span>
+            </div>
+            <div className="weather-item">
+              <span>Mínima prevista: {minTemp}&deg;C</span>
+            </div>
+            <div className="weather-item">
+              <span>Viento: {wind} km/h</span>
+            </div>
           </div>
         </div>
       );
     } else {
-      return (
-        <div>
-          <h2>
-            No pudimos encontrar tu ubicación, por favor ingresá el nombre de tu
-            ciudad
-          </h2>
-          <Search />
-        </div>
-      );
+      return <div>Cargando...</div>;
     }
   }
 }

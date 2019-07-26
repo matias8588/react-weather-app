@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import Home from './Components/Home/Home';
-
+import Weather from './Components/Weather/Weather.jsx'
 export default class App extends Component {
   render() {
     return (
 
-      <Home />
+      <Weather />
     )
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
 import Loading from "../Loading/Loading.jsx";
-import "./Weather.css";
+import "./Weather.scss";
 
 export default class Weather extends Component {
   state = {
@@ -29,15 +29,19 @@ export default class Weather extends Component {
   getWeather = async (latitude, longitude) => {
     const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
     const api_call = await fetch(
-      `//api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`,
+      `//api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=es`,
     );
     const data = await api_call.json();
     console.log(data);
+    console.log(data.weather[0].main);
     this.setState({
       lat: latitude,
       lon: longitude,
       city: data.name,
-      status: data.weather,
+      status: data.weather[0].main,
+      condition:
+        data.weather[0].description.charAt(0).toUpperCase() +
+        data.weather[0].description.slice(1),
       temperatureC: Math.round(data.main.temp),
       humidity: data.main.humidity,
       maxTemp: Math.round(data.main.temp_max),
@@ -72,6 +76,7 @@ export default class Weather extends Component {
     const {
       city,
       status,
+      condition,
       temperatureC,
       humidity,
       maxTemp,
@@ -81,7 +86,8 @@ export default class Weather extends Component {
       sunrise,
       sunset,
     } = this.state;
-    if (city) {
+
+    if ((city && status === "Clear") || (city && status === "Clouds")) {
       return (
         <div className="App">
           <div className="container">
@@ -90,14 +96,17 @@ export default class Weather extends Component {
                 <div className="weather-card one">
                   <div className="top">
                     <div className="wrapper">
-                      <div className="mynav">
-                        <span className="lnr lnr-chevron-left" />
-                        <span className="lnr lnr-cog" />
-                      </div>
-                      <h1 className="heading">Clear night</h1>
-                      <h3 className="location">Dhaka, Bangladesh</h3>
+                      <h1 className="heading">
+                        <img
+                          className="weather-icon"
+                          src={`http://openweathermap.org/img/w/${icon}.png`}
+                          alt="weather icon"
+                        />
+                        {condition}
+                      </h1>
+                      <h3 className="location">{city}</h3>
                       <p className="temp">
-                        <span className="temp-value">20</span>
+                        <span className="temp-value">{temperatureC}</span>
                         <span className="deg">0</span>
                         <span className="temp-type">C</span>
                       </p>
@@ -106,69 +115,25 @@ export default class Weather extends Component {
                   <div className="bottom">
                     <div className="wrapper">
                       <ul className="forecast">
-                        <span className="lnr lnr-chevron-up go-up" />
                         <li className="active">
-                          <span className="date">Yesterday</span>
-                          <span className="lnr lnr-sun condition">
-                            <span className="temp">
-                              23<span className="deg">0</span>
-                              <span className="temp-type">C</span>
-                            </span>
-                          </span>
-                        </li>
-                        <li>
-                          <span className="date">Tomorrow</span>
-                          <span className="lnr lnr-cloud condition">
-                            <span className="temp">
-                              21<span className="deg">0</span>
-                              <span className="temp-type">C</span>
-                            </span>
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col">
-                <div className="weather-card rain">
-                  <div className="top">
-                    <div className="wrapper">
-                      <div className="mynav">
-                        <span className="lnr lnr-chevron-left" />
-                        <span className="lnr lnr-cog" />
-                      </div>
-                      <h1 className="heading">Rainy day</h1>
-                      <h3 className="location">Sylhet, Bangladesh</h3>
-                      <p className="temp">
-                        <span className="temp-value">16</span>
-                        <span className="deg">0</span>
-                        <span className="temp-type">C</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="bottom">
-                    <div className="wrapper">
-                      <ul className="forecast">
-                        <span className="lnr lnr-chevron-up go-up" />
-                        <li className="active">
-                          <span className="date">Yesterday</span>
-                          <span className="lnr lnr-sun condition">
-                            <span className="temp">
-                              22<span className="deg">0</span>
-                              <span className="temp-type">C</span>
-                            </span>
-                          </span>
-                        </li>
-                        <li>
-                          <span className="date">Tomorrow</span>
-                          <span className="lnr lnr-cloud condition">
-                            <span className="temp">
-                              18<span className="deg">0</span>
-                              <span className="temp-type">C</span>
-                            </span>
-                          </span>
+                          <div className="weather-item">
+                            <span>Salida del sol: {sunrise}</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Puesta del sol: {sunset}</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Máxima prevista: {maxTemp}&deg;C</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Mínima prevista: {minTemp}&deg;C</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Viento: {wind} km/h</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Humedad: {humidity}%</span>
+                          </div>
                         </li>
                       </ul>
                     </div>
@@ -177,41 +142,77 @@ export default class Weather extends Component {
               </div>
             </div>
           </div>
-          {/* <div className="weather-box">
-            <div className="weather-item">Ciudad: {city}</div>
-            <div className="weather-item">
-              Temperatura: {temperatureC} &deg;C
+        </div>
+      );
+    } else if (city && status !== "Clear") {
+      return (
+        <div className="App">
+          <div className="container">
+            <div className="row">
+              <div className="col">
+                <div className="weather-card rain">
+                  <div className="top">
+                    <div className="wrapper">
+                      <h1 className="heading">
+                        <img
+                          className="weather-icon"
+                          src={`http://openweathermap.org/img/w/${icon}.png`}
+                          alt="weather icon"
+                        />
+                        {condition}
+                      </h1>
+                      <h3 className="location">{city}</h3>
+                      <p className="temp">
+                        <span className="temp-value">{temperatureC}</span>
+                        <span className="deg">0</span>
+                        <span className="temp-type">C</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bottom">
+                    <div className="wrapper">
+                      <ul className="forecast">
+                        <li className="active">
+                          <div className="weather-item">
+                            <span>Salida del sol: {sunrise}</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Puesta del sol: {sunset}</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Máxima prevista: {maxTemp}&deg;C</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Mínima prevista: {minTemp}&deg;C</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Viento: {wind} km/h</span>
+                          </div>
+                          <div className="weather-item">
+                            <span>Humedad: {humidity}%</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="weather-item">Humedad: {humidity}%</div>
-            <div>
-              <img
-                className="weather-icon"
-                src={`http://openweathermap.org/img/w/${icon}.png`}
-                alt="weather icon"
-              />
-            </div>
-            <div className="weather-item">
-              <span>Salida del sol: {sunrise}</span>
-            </div>
-            <div className="weather-item">
-              <span>Puesta del sol: {sunset}</span>
-            </div>
-            <div className="weather-item">
-              <span>Máxima prevista: {maxTemp}&deg;C</span>
-            </div>
-            <div className="weather-item">
-              <span>Mínima prevista: {minTemp}&deg;C</span>
-            </div>
-            <div className="weather-item">
-              <span>Viento: {wind} km/h</span>
-            </div>
-          </div> */}
+          </div>
         </div>
       );
     } else {
       return (
         <div>
-          <Loading />
+          <div className="App">
+            <div className="container">
+              <div className="row">
+                <div className="col">
+                  <Loading />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }

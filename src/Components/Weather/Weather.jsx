@@ -116,22 +116,22 @@ export default class Weather extends Component {
                     <div className="wrapper">
                       <ul className="forecast">
                         <li className="active">
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Salida del sol: {sunrise}</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Puesta del sol: {sunset}</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Máxima prevista: {maxTemp}&deg;C</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Mínima prevista: {minTemp}&deg;C</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Viento: {wind} km/h</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Humedad: {humidity}%</span>
                           </div>
                         </li>
@@ -176,19 +176,19 @@ export default class Weather extends Component {
                           <div className="weather-item">
                             <span>Salida del sol: {sunrise}</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Puesta del sol: {sunset}</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Máxima prevista: {maxTemp}&deg;C</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Mínima prevista: {minTemp}&deg;C</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Viento: {wind} km/h</span>
                           </div>
-                          <div className="weather-item">
+                          <div id="weather-item">
                             <span>Humedad: {humidity}%</span>
                           </div>
                         </li>
